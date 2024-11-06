@@ -1,0 +1,30 @@
+<app-filter></app-filter>
+<div class="card w-80">
+  <p-table
+    [value]="(product$ | async) || []"
+    [scrollable]="true"
+    scrollHeight="400px"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="text-center">Id</th>
+        <th class="text-center">Title</th>
+        <th class="text-center">Category</th>
+        <th class="text-center">Price</th>
+        <th class="text-center">Tags</th>
+        <th class="text-center">AvgReview</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr >
+        <td  class="text-center">{{ product.id }}</td>
+        <td  class="text-center">{{ product.title }}</td>
+        <td  class="text-center">{{ product.category }}</td>
+        <td  class="text-center">{{ product.price | currency }}</td>
+        <td  class="text-center"> <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip" *ngFor="let item of product.tags">{{item}}</p-chip> </td>
+        <td  class="text-center">{{ product.rating }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

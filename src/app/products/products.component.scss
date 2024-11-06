@@ -1,0 +1,9 @@
+.w-80{
+    width: 70vw;
+    margin:50px auto;
+}
+:host ::ng-deep .p-chip.custom-chip {
+    background-color: #0ea5e9;
+    color: white;
+    text-align: center;
+}

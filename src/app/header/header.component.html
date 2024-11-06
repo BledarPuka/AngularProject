@@ -1,0 +1,11 @@
+<header class="header-border py-3 pl-6">
+    <nav>
+        <div class="card flex flex-wrap gap-3 ">
+            <p-iconField iconPosition="left" >
+                <p-inputIcon styleClass="pi pi-search" />
+                <input type="text" pInputText placeholder="Search" #search />
+            </p-iconField>
+            <p-button label="Search" severity="info" (onClick)="onSearch(search.value)" />
+        </div>
+    </nav>
+</header>
