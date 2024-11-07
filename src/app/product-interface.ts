@@ -3,12 +3,14 @@ export interface Product {
   title: string;
   category: string;
   price: number;
-  tags: [];
-  rating: number;
+  tags: any[];
+  reviews: {
+    rating: number
+  }[];
+  average:number
 }
 
 export interface ProductApi {
-  map(arg0: (data: { products: {}[]; }) => { prop: string; }[]): unknown;
   products: Product[];
   total: number;
   skip: number;

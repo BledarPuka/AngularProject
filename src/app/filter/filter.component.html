@@ -1,16 +1,27 @@
-
 <div class="pl-6">
-<h2>Filters</h2>
-<form action="">
+  <h2>Filters</h2>
 
-    <div class="card flex flex-wrap gap-3">
-      <p-inputNumber inputId="integeronly" placeholder="skip" />
-    
-      <p-inputNumber inputId="integeronly" placeholder="limit" />
-    
-      <p-multiSelect optionLabel="prop" placeholder="select"  [options]="filter "/>
-    
-      <p-button label="Search" severity="info" />
-    </div>
-</form>
+  <form [formGroup]="filterForm" class="card flex flex-wrap gap-3">
+    <p-inputNumber
+      inputId="integeronly"
+      formControlName="skip"
+      placeholder="skip"
+    />
+
+    <p-inputNumber
+      inputId="integeronly"
+      formControlName="limit"
+      placeholder="limit"
+    />
+
+    <p-multiSelect
+      optionLabel="prop"
+      placeholder="select"
+      formControlName="filter"
+      [options]="filterKey"
+      optionValue="prop"
+    />
+
+    <p-button label="Search" (onClick)="onFilter()" severity="info" />
+  </form>
 </div>

@@ -1,30 +1,45 @@
 <app-filter></app-filter>
 <div class="card w-80">
   <p-table
+    [columns]="cols"
     [value]="(product$ | async) || []"
     [scrollable]="true"
     scrollHeight="400px"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
       <tr>
-        <th class="text-center">Id</th>
-        <th class="text-center">Title</th>
-        <th class="text-center">Category</th>
-        <th class="text-center">Price</th>
-        <th class="text-center">Tags</th>
-        <th class="text-center">AvgReview</th>
+        @for(col of columns; track $index){
+          <th class="text-center">
+            {{col.header}}
+          </th>
+        }
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
+    <ng-template pTemplate="body" let-product let-rowData let-columns="columns">
       <tr >
-        <td  class="text-center">{{ product.id }}</td>
-        <td  class="text-center">{{ product.title }}</td>
-        <td  class="text-center">{{ product.category }}</td>
-        <td  class="text-center">{{ product.price | currency }}</td>
-        <td  class="text-center"> <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip" *ngFor="let item of product.tags">{{item}}</p-chip> </td>
-        <td  class="text-center">{{ product.rating }}</td>
+  
+        @for(col of columns; track $index){
+          <td class="text-center">
+            @switch (col.field) {
+              @case ('price') {
+                {{ rowData[col.field] | currency }}
+              }
+              @case ('tags') {
+                @for (tag of product.tags; track $index) {
+                  <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip"> {{tag}}</p-chip>
+                }
+              }
+              @default {
+                {{ rowData[col.field] }}
+              }
+            }
+          </td>
+        }
+        
       </tr>
     </ng-template>
   </p-table>
 </div>
+
+      <!-- <td *ngFor="let item of product.reviews"  class="text-center">{{ item.rating + item.rating}}</td> -->

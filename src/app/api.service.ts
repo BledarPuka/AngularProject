@@ -13,9 +13,9 @@ export class ApiService {
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
-  populateSelectInput():Observable<ProductApi>{
+  populateSelectInput(): Observable<ProductApi> {
     return this.http.get<ProductApi>(`${this.apiUrl}`);
-    }
+  }
 
   searchProduct(category: string): Observable<ProductApi> {
     return this.http
@@ -28,9 +28,9 @@ export class ApiService {
   }
 
   filterProducts(
-    skip: number,
-    limit: number,
-    select: []
+    skip: number | undefined,
+    limit: number | undefined,
+    select: string[]
   ): Observable<ProductApi> {
     return this.http
       .get<ProductApi>(
