@@ -52,6 +52,11 @@
           
                 <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
               }
+              @case('dimensions'){
+                @for (item of product.dimensions | keyvalue; track $index )  {
+                 <strong>{{item.key+': ' | uppercase}}</strong> {{item.value}}
+                }
+              }
               @default {
                 {{ rowData[col.field] }}
               }
