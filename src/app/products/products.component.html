@@ -1,10 +1,10 @@
-<app-filter></app-filter>
+<app-filter [preSelectedFilters]="cols"  (filterChange)="onFilterChange($event)"></app-filter>
 <div class="card w-80">
   <p-table
     [columns]="cols"
     [value]="(product$ | async) || []"
     [scrollable]="true"
-    scrollHeight="400px"
+    scrollHeight="700px"
     [tableStyle]="{ 'min-width': '50rem' }"
   >
     <ng-template pTemplate="header" let-columns>
@@ -29,6 +29,28 @@
                 @for (tag of product.tags; track $index) {
                   <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip"> {{tag}}</p-chip>
                 }
+              }
+              @case('meta'){
+                {{product.meta.createdAt | date:'dd/MM/yyyy'}}
+              }
+              @case ('thumbnail') {
+                <p-image 
+                [src]="product.thumbnail"
+                alt="Image" 
+                width="50" />
+              }
+              @case('images'){
+                @for (image of product.images; track $index){
+
+                  <p-image 
+                  [src]="image"
+                  alt="Image" 
+                  width="50" />
+                }
+              }
+              @case('rating'){
+          
+                <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
               }
               @default {
                 {{ rowData[col.field] }}

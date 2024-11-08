@@ -8,6 +8,9 @@ import { TableModule } from 'primeng/table';
 import { map, Observable } from 'rxjs';
 import { FilterComponent } from '../filter/filter.component';
 import { ChipModule } from 'primeng/chip';
+import { RatingModule } from 'primeng/rating';
+import { ImageModule } from 'primeng/image';
+import { FormsModule } from '@angular/forms';
 
 interface Column {
   field: string;
@@ -22,7 +25,7 @@ interface Column {
     CommonModule,
     ChipModule,
     TableModule,
-    FilterComponent,
+    FilterComponent,ImageModule,RatingModule,FormsModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -30,30 +33,41 @@ interface Column {
 export class ProductsComponent implements OnInit {
   private routes = inject(Router);
   private apiService = inject(ApiService);
+  
   product$: Observable<Product[]> = this.apiService.products.pipe(
     map((list) =>
       list.map((product) => ({
         ...product,
-        average: product.reviews.reduce((acc, curr) => {
-          acc += curr.rating 
-          return acc
-        }, 0) / product.reviews.length,
+        average:
+          product.reviews?.reduce((acc, curr) => {
+            acc += curr.rating;
+            return acc;
+          }, 0) / product.reviews?.length,
       }))
     )
   );
 
-  cols!: Column[];
+  cols: Column[] = [
+    { field: 'id', header: 'Id' },
+    { field: 'title', header: 'Title' },
+    { field: 'category', header: 'Category' },
+    { field: 'price', header: 'Price' },
+    { field: 'tags', header: 'Tags' },
+    { field: 'average', header: 'AvgReview' },
+  ];
   constructor() {}
 
-  ngOnInit(): void {
-    this.cols = [
-      { field: 'id', header: 'Id' },
-      { field: 'title', header: 'Title' },
-      { field: 'category', header: 'Category' },
-      { field: 'price', header: 'Price' },
-      { field: 'tags', header: 'Tags' },
-      { field: 'average', header: 'AvgReview' },
-    ];
+  ngOnInit(): void {}
+
+  onFilterChange(colums: string[]) {
+    colums.forEach((col) => {
+      if (this.cols.every((colums) => colums.field !== col)) {
+        this.cols.push({field: col, header: col});
+      }
+    });
+    this.cols = this.cols.filter((colum)=> colums.includes(colum.field))
+
+    console.log(colums);
   }
 
   productById(id: number) {
