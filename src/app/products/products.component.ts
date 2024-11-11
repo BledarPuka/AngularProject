@@ -11,6 +11,8 @@ import { ChipModule } from 'primeng/chip';
 import { RatingModule } from 'primeng/rating';
 import { ImageModule } from 'primeng/image';
 import { FormsModule } from '@angular/forms';
+import { EmmptyStateComponent } from '../emmpty-state/emmpty-state.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 interface Column {
   field: string;
@@ -22,10 +24,15 @@ interface Column {
   standalone: true,
   imports: [
     HttpClientModule,
+    ProgressSpinnerModule,
     CommonModule,
     ChipModule,
     TableModule,
-    FilterComponent,ImageModule,RatingModule,FormsModule
+    FilterComponent,
+    ImageModule,
+    RatingModule,
+    FormsModule,
+    EmmptyStateComponent,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -33,7 +40,10 @@ interface Column {
 export class ProductsComponent implements OnInit {
   private routes = inject(Router);
   private apiService = inject(ApiService);
-  
+  searchPerformed = false;
+  hasResults = true;
+  isLoading = true;
+
   product$: Observable<Product[]> = this.apiService.products.pipe(
     map((list) =>
       list.map((product) => ({
@@ -53,20 +63,27 @@ export class ProductsComponent implements OnInit {
     { field: 'category', header: 'Category' },
     { field: 'price', header: 'Price' },
     { field: 'tags', header: 'Tags' },
-    { field: 'average', header: 'AvgReview' },
+    { field: 'reviews', header: 'AvgReview' },
   ];
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.product$.subscribe((products) => {
+      this.isLoading = false;
+      this.hasResults = products.length > 0;
+    });
+  }
 
   onFilterChange(colums: string[]) {
+    this.searchPerformed = true;
+    this.isLoading = true;
     colums.forEach((col) => {
       if (this.cols.every((colums) => colums.field !== col)) {
-        this.cols.push({field: col, header: col});
+        this.cols.push({ field: col, header: col });
       }
     });
-    this.cols = this.cols.filter((colum)=> colums.includes(colum.field))
-
+    this.cols = this.cols.filter((colum) => colums.includes(colum.field));
     console.log(colums);
   }
 

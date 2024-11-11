@@ -9,7 +9,6 @@ import {
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ButtonModule } from 'primeng/button';
-import { map, Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import {
   FormControl,
@@ -54,7 +53,7 @@ export class FilterComponent implements OnInit {
     this.apiService.populateSelectInput().subscribe((data) => {
       this.filterKey = Object.keys(data.products[0]).map((key) => ({
         prop: key,
-        disabled: !!this.preSelectedFilters.find((item)=>  item.field === key)
+        disabled: !!this.preSelectedFilters.find((item) => item.field === key),
       }));
     });
 

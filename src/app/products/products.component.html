@@ -1,4 +1,27 @@
-<app-filter [preSelectedFilters]="cols"  (filterChange)="onFilterChange($event)"></app-filter>
+<app-filter
+  [preSelectedFilters]="cols"
+  (filterChange)="onFilterChange($event)"
+></app-filter>
+@if (isLoading) {
+
+<div class="card flex justify-content-center">
+  <p-progressSpinner
+    styleClass="w-4rem h-4rem"
+    strokeWidth="8"
+    fill="var(--surface-ground)"
+    animationDuration=".5s"
+  />
+</div>
+} @if (!searchPerformed && !isLoading) {
+<app-emmpty-state
+  [message]="'Search or filter to show results'"
+></app-emmpty-state>
+}@else if (searchPerformed && !hasResults && !isLoading) {
+<app-emmpty-state
+  [message]="'No results for selected filters'"
+></app-emmpty-state>
+}@else if (hasResults) {
+
 <div class="card w-80">
   <p-table
     [columns]="cols"
@@ -10,63 +33,48 @@
     <ng-template pTemplate="header" let-columns>
       <tr>
         @for(col of columns; track $index){
-          <th class="text-center">
-            {{col.header}}
-          </th>
+        <th class="text-center">
+          {{ col.header }}
+        </th>
         }
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-product let-rowData let-columns="columns">
-      <tr >
-  
+      <tr>
         @for(col of columns; track $index){
-          <td class="text-center">
-            @switch (col.field) {
-              @case ('price') {
-                {{ rowData[col.field] | currency }}
-              }
-              @case ('tags') {
-                @for (tag of product.tags; track $index) {
-                  <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip"> {{tag}}</p-chip>
-                }
-              }
-              @case('meta'){
-                {{product.meta.createdAt | date:'dd/MM/yyyy'}}
-              }
-              @case ('thumbnail') {
-                <p-image 
-                [src]="product.thumbnail"
-                alt="Image" 
-                width="50" />
-              }
-              @case('images'){
-                @for (image of product.images; track $index){
+        <td class="text-center">
+          @switch (col.field) { @case ('price') {
+          {{ rowData[col.field] | currency }}
+          } @case ('tags') { @for (tag of product.tags; track $index) {
+          <p-chip styleClass="p-mr-2 ml-2 py-2 custom-chip"> {{ tag }}</p-chip>
+          } } @case('meta'){
+          {{ product.meta.createdAt | date : "dd/MM/yyyy" }}
+          } @case ('thumbnail') {
+          <p-image [src]="product.thumbnail" alt="Image" width="50" />
+          } @case('images'){ @for (image of product.images; track $index){
 
-                  <p-image 
-                  [src]="image"
-                  alt="Image" 
-                  width="50" />
-                }
-              }
-              @case('rating'){
-          
-                <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-              }
-              @case('dimensions'){
-                @for (item of product.dimensions | keyvalue; track $index )  {
-                 <strong>{{item.key+': ' | uppercase}}</strong> {{item.value}}
-                }
-              }
-              @default {
-                {{ rowData[col.field] }}
-              }
-            }
-          </td>
+          <p-image [src]="image" alt="Image" width="50" />
+          } } @case('rating'){
+
+          <p-rating
+            [(ngModel)]="product.rating"
+            [readonly]="true"
+            [cancel]="false"
+          ></p-rating>
+          } @case('dimensions'){ @for (item of product.dimensions | keyvalue;
+          track $index ) {
+          <strong>{{ item.key + ": " | uppercase }}</strong> {{ item.value }}
+          } } @case ('reviews') {
+          {{ product.average | number : "1.2-2" }}
+          } @default {
+          {{ rowData[col.field] }}
+          } }
+        </td>
         }
-        
       </tr>
     </ng-template>
   </p-table>
 </div>
+}
 
-      <!-- <td *ngFor="let item of product.reviews"  class="text-center">{{ item.rating + item.rating}}</td> -->
+<!-- <td *ngFor="let item of product.reviews"  class="text-center">{{ item.rating + item.rating}}</td> -->
