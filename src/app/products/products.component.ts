@@ -13,6 +13,7 @@ import { ImageModule } from 'primeng/image';
 import { FormsModule } from '@angular/forms';
 import { EmmptyStateComponent } from '../emmpty-state/emmpty-state.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ButtonModule } from 'primeng/button';
 
 interface Column {
   field: string;
@@ -33,16 +34,15 @@ interface Column {
     RatingModule,
     FormsModule,
     EmmptyStateComponent,
+    ButtonModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit {
   private routes = inject(Router);
-  private apiService = inject(ApiService);
-  searchPerformed = false;
-  hasResults = true;
-  isLoading = true;
+  protected apiService = inject(ApiService);
+  hasResults: boolean = true;
 
   product$: Observable<Product[]> = this.apiService.products.pipe(
     map((list) =>
@@ -68,26 +68,30 @@ export class ProductsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.isLoading = true;
+
     this.product$.subscribe((products) => {
-      this.isLoading = false;
       this.hasResults = products.length > 0;
     });
   }
 
   onFilterChange(colums: string[]) {
-    this.searchPerformed = true;
-    this.isLoading = true;
+
     colums.forEach((col) => {
       if (this.cols.every((colums) => colums.field !== col)) {
         this.cols.push({ field: col, header: col });
       }
     });
+
     this.cols = this.cols.filter((colum) => colums.includes(colum.field));
     console.log(colums);
   }
 
+  newProduct(){
+    
+    this.routes.navigate(['products/add']);
+  }
   productById(id: number) {
     this.routes.navigate([`product/${id}`]);
   }
+
 }

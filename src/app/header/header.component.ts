@@ -21,6 +21,7 @@ activatedRoute= inject(ActivatedRoute)
 
 onSearch(category:string){
   this.apiService.searchProduct(category).subscribe()
+  console.log(category)
 }
 
 }

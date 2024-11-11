@@ -2,27 +2,21 @@
   [preSelectedFilters]="cols"
   (filterChange)="onFilterChange($event)"
 ></app-filter>
-@if (isLoading) {
-
-<div class="card flex justify-content-center">
-  <p-progressSpinner
-    styleClass="w-4rem h-4rem"
-    strokeWidth="8"
-    fill="var(--surface-ground)"
-    animationDuration=".5s"
-  />
-</div>
-} @if (!searchPerformed && !isLoading) {
+@if (!hasResults || apiService.isLoading ) {
 <app-emmpty-state
-  [message]="'Search or filter to show results'"
+  [message]="
+    apiService.searchPerformed
+      ? 'No results for selected filters'
+      : 'Search or filter to show results'
+  "
 ></app-emmpty-state>
-}@else if (searchPerformed && !hasResults && !isLoading) {
-<app-emmpty-state
-  [message]="'No results for selected filters'"
-></app-emmpty-state>
-}@else if (hasResults) {
+}@else {
 
 <div class="card w-80">
+  <div class="flex justify-content-end align-items-end mb-4">
+
+    <p-button  label="Add New Product" (onClick)="newProduct()" severity="info" />
+  </div>
   <p-table
     [columns]="cols"
     [value]="(product$ | async) || []"
@@ -75,6 +69,7 @@
     </ng-template>
   </p-table>
 </div>
+
 }
 
 <!-- <td *ngFor="let item of product.reviews"  class="text-center">{{ item.rating + item.rating}}</td> -->

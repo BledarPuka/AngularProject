@@ -1,12 +1,22 @@
-<div
-  class="flex gap-4 mt-7 p-3 mx-auto border-1 border-solid border-round-sm w-24rem"
->
-  <i
-    class="pi pi-ethereum flex align-items-center justify-content-center"
-    style="font-size: 4rem"
-  ></i>
-  <div>
-    <h4>No Results</h4>
-    <p>{{ message }}</p>
+@if (apiService.isLoading) {
+  <div class=" flex justify-content-center h-30rem align-items-center">
+    <p-progressSpinner
+    styleClass="w-4rem h-4rem"
+    strokeWidth="8"
+    fill="var(--surface-ground)"
+    animationDuration=".5s"
+    />
   </div>
-</div>
+}@else{
+
+  <div class="flex gap-4 mt-9 p-4 py-7 shadow-7 mt-7  mx-auto border-none border-solid border-round-3xl w-30rem surface-200">
+    <i
+      class="pi pi-times-circle flex align-items-center justify-content-center"
+      style="font-size: 7rem"
+    ></i>
+    <div>
+      <p class="text-3xl font-medium">No Results</p>
+      <p class="mt-5 text-xl font-italic" >{{ message }}</p>
+    </div>
+  </div>
+}
