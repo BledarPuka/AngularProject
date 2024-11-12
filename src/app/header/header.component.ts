@@ -4,9 +4,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../api.service';
-import { filter, Observable } from 'rxjs';
-import { Product } from '../product-interface';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 export class HeaderComponent {
 apiService= inject(ApiService)
 activatedRoute= inject(ActivatedRoute)
+protected router= inject(Router)
 
 onSearch(category:string){
   this.apiService.searchProduct(category).subscribe()

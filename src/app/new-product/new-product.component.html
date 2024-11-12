@@ -1,10 +1,56 @@
-<p>new-product works!</p>
-
-<form [formGroup]="newProduct">
-    <div>
-        <p-floatLabel>
-            <input pInputText id="title" formControlName="title" />
+<form [formGroup]="newProduct" class=" px-8 pt-8 max-h-screen">
+    <div class="grid justify-content-between ">
+        <p-floatLabel class="col-4">
+            <input pInputText id="title" class="w-full h-4rem" formControlName="title" />
             <label for="title">Title</label>
         </p-floatLabel>
+        <p-floatLabel class="col-7">
+          <textarea id="description" class="w-full h-4rem" [autoResize]="true" formControlName="description" pInputTextarea></textarea>
+            <label for="description">Description</label>
+        </p-floatLabel>
     </div>
+    <div class="grid justify-content-between  mt-4">
+        <p-floatLabel class="col-4">
+         <p-dropdown 
+            [options]="categoryOptions"
+            formControlName="category"
+            optionLabel="name" 
+            />
+            <label for="category">Category</label>
+        </p-floatLabel>
+        <div class="grid col-7 m-0 justify-content-between ">
+            <p-floatLabel>
+                <p-inputNumber inputId="integeronly" id="price"  formControlName="price" />
+                <label for="price">Price</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputNumber inputId="integeronly" id="discount"  formControlName="discount" />
+                <label for="discount">Discount</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputNumber inputId="integeronly" id="stock"  formControlName="stock" />
+                <label for="stock">Stock</label>
+            </p-floatLabel>
+
+        </div>
+    </div>
+    <div class="grid justify-content-between  mt-4">
+        <p-floatLabel class="col-6">
+            <p-autoComplete 
+            formControlName="tags"
+            [suggestions]="productTags" 
+            (completeMethod)="search()" 
+            [multiple]="true" />
+            <label for="tags">Tags</label>
+        </p-floatLabel>
+
+        <p-floatLabel class="col-5">
+            <input pInputText id="sku" class="w-full h-4rem" formControlName="sku" />
+            <label for="sku">SKU</label>
+        </p-floatLabel>
+    </div>
+    <footer class="flex justify-content-between w-full left-0 border-1 p-3 absolute bottom-0">
+        <p-button label="Delete" severity="danger" />
+        <p-button label="Create" />
+    </footer>
 </form>
