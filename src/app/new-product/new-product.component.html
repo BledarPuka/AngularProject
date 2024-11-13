@@ -1,4 +1,4 @@
-<form [formGroup]="newProduct" class="px-8 pt-8 max-h-screen">
+<form [formGroup]="formGroup" class="px-8 pt-8 max-h-screen">
   <div class="grid justify-content-between">
     <p-floatLabel class="col-4">
       <input
@@ -79,7 +79,16 @@
   <footer
     class="flex justify-content-between w-full left-0 border-1 p-3 absolute bottom-0"
   >
+  @if (productId) {
+
     <p-button label="Delete" severity="danger" />
-    <p-button label="Create" (click)="submitProduct()" />
+  }@else {
+    <p-button label="Delete" disabled="true" severity="danger" />
+
+  }
+  
+
+    <p-button [label]="!productId? 'Create':'Update'" (click)="!productId? submitProduct(): editProduct()" />
+  
   </footer>
 </form>

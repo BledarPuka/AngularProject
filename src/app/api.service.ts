@@ -82,4 +82,13 @@ export class ApiService {
       }
     );
   }
+  updateProduct(product: Partial<Product>): Observable<Product> {
+    return this.http.put<Product>(
+      'https://dummyjson.com/products/add',
+      product,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
 }

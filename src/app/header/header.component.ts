@@ -4,7 +4,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../api.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,13 +15,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   apiService = inject(ApiService);
-  activatedRoute = inject(ActivatedRoute);
+  route = inject(ActivatedRoute);
   protected router = inject(Router);
 
-  productId: string | null = null;
+  productId: string| undefined;
 
   ngOnInit(): void {
-    this.productId = this.activatedRoute.snapshot.paramMap.get('id');
+     this.route.params.subscribe((params: Params)=>{
+      this.productId = params['id'];
+    });
+    console.log(this.productId);
+    
+   
   }
 
   onSearch(category: string) {
