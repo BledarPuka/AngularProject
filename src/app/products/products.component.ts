@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Product } from '../product-interface';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../api.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -34,7 +34,8 @@ interface Column {
     RatingModule,
     FormsModule,
     EmmptyStateComponent,
-    ButtonModule
+    ButtonModule,
+    RouterLink,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -68,14 +69,12 @@ export class ProductsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-
     this.product$.subscribe((products) => {
       this.hasResults = products.length > 0;
     });
   }
 
   onFilterChange(colums: string[]) {
-
     colums.forEach((col) => {
       if (this.cols.every((colums) => colums.field !== col)) {
         this.cols.push({ field: col, header: col });
@@ -86,12 +85,11 @@ export class ProductsComponent implements OnInit {
     console.log(colums);
   }
 
-  newProduct(){
-    
+  newProduct() {
     this.routes.navigate(['products/add']);
   }
+
   productById(id: number) {
     this.routes.navigate([`product/${id}`]);
   }
-
 }

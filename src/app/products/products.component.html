@@ -14,8 +14,11 @@
 
 <div class="card w-80">
   <div class="flex justify-content-end align-items-end mb-4">
-
-    <p-button  label="Add New Product" (onClick)="newProduct()" severity="info" />
+    <p-button
+      label="Add New Product"
+      (onClick)="newProduct()"
+      severity="info"
+    />
   </div>
   <p-table
     [columns]="cols"
@@ -34,7 +37,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-product let-rowData let-columns="columns">
-      <tr>
+      <tr [routerLink]="['/product', product.id]">
         @for(col of columns; track $index){
         <td class="text-center">
           @switch (col.field) { @case ('price') {

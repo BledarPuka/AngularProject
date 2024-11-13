@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, delay, Observable, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, tap } from 'rxjs';
 import { Product, ProductApi } from './product-interface';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  private http = inject(HttpClient);
+
   products = new BehaviorSubject<Product[]>([]);
   apiUrl = 'https://dummyjson.com/products';
-  constructor(private http: HttpClient) {}
-  isLoading:boolean = false;
-  searchPerformed:boolean = false;
+  isLoading: boolean = false;
+  searchPerformed: boolean = false;
 
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
@@ -20,15 +21,14 @@ export class ApiService {
   }
 
   searchProduct(category: string): Observable<ProductApi> {
-    this.searchPerformed=false;
-    this.isLoading=true;
+    this.searchPerformed = false;
+    this.isLoading = true;
     return this.http
       .get<ProductApi>(`${this.apiUrl}/search?q=${category}`)
       .pipe(
-        delay(300),
         tap((data) => {
-          this.searchPerformed=true;
-          this.isLoading=false;
+          this.searchPerformed = true;
+          this.isLoading = false;
           this.products.next(data.products);
         })
       );
@@ -39,19 +39,47 @@ export class ApiService {
     limit: number | undefined,
     select: string[]
   ): Observable<ProductApi> {
-    this.searchPerformed=false;
-    this.isLoading=true;
+    this.searchPerformed = false;
+    this.isLoading = true;
     return this.http
       .get<ProductApi>(
         `${this.apiUrl}?limit=${limit}&skip=${skip}&select=${select.join(',')}`
       )
       .pipe(
-        delay(300),
         tap((data) => {
-          this.searchPerformed=true;
-          this.isLoading=false;
+          this.searchPerformed = true;
+          this.isLoading = false;
           this.products.next(data.products);
         })
       );
+  }
+
+  getCategories(): Observable<string[]> {
+    return this.http
+      .get<ProductApi>(`${this.apiUrl}?limit=100`)
+      .pipe(
+        map((data) => [
+          ...new Set(data.products.map((product) => product.category)),
+        ])
+      );
+  }
+
+  getTags(): Observable<string[]> {
+    return this.http.get<ProductApi>(`${this.apiUrl}?limit=100`).pipe(
+      map((data) => {
+        const allTags = data.products.flatMap((product) => product.tags);
+        return Array.from(new Set(allTags));
+      })
+    );
+  }
+
+  createProduct(product: Partial<Product>): Observable<Product> {
+    return this.http.post<Product>(
+      'https://dummyjson.com/products/add',
+      product,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }

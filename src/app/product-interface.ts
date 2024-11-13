@@ -5,9 +5,13 @@ export interface Product {
   price: number;
   tags: any[];
   reviews: {
-    rating: number
+    rating: number;
   }[];
-  average:number
+  average: number;
+  discountPercentage: number;
+  stock: number;
+  sku: string;
+  description: string;
 }
 
 export interface ProductApi {

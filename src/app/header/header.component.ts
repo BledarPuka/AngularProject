@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -9,18 +9,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [ ButtonModule,IconFieldModule,InputIconModule,InputTextModule],
+  imports: [ButtonModule, IconFieldModule, InputIconModule, InputTextModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrl: './header.component.css',
 })
-export class HeaderComponent {
-apiService= inject(ApiService)
-activatedRoute= inject(ActivatedRoute)
-protected router= inject(Router)
+export class HeaderComponent implements OnInit {
+  apiService = inject(ApiService);
+  activatedRoute = inject(ActivatedRoute);
+  protected router = inject(Router);
 
-onSearch(category:string){
-  this.apiService.searchProduct(category).subscribe()
-  console.log(category)
-}
+  productId: string | null = null;
 
+  ngOnInit(): void {
+    this.productId = this.activatedRoute.snapshot.paramMap.get('id');
+  }
+
+  onSearch(category: string) {
+    this.apiService.searchProduct(category).subscribe();
+    console.log(category);
+  }
 }
