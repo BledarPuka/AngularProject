@@ -14,28 +14,20 @@ import { filter, Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   private apiService = inject(ApiService);
   protected router = inject(Router);
 
   productId: string | null = null;
 
-  private routerSubscription: Subscription | null = null;
-
   ngOnInit(): void {
-    this.routerSubscription = this.router.events
+    this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         const currentUrl = this.router.url;
         const idMatch = currentUrl.match(/product\/(\d+)/);
         this.productId = idMatch ? idMatch[1] : null;
       });
-  }
-  ngOnDestroy(): void {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-      console.log('Unsubscribed');
-    }
   }
 
   onSearch(category: string) {
