@@ -1,6 +1,7 @@
 <form [formGroup]="formGroup" class="px-8 pt-8 max-h-screen">
   <div class="grid justify-content-between">
-    <p-floatLabel class="col-4">
+    <!-- Title -->
+    <p-floatLabel class="col-4 h-5rem">
       <input
         pInputText
         id="title"
@@ -8,8 +9,17 @@
         formControlName="title"
       />
       <label for="title">Title</label>
+      @if (formGroup.get('title')?.invalid && (formGroup.get('title')?.dirty ||
+      formGroup.get('title')?.touched) ) {
+      <p class="text-red-500 ml-2 mt-2 mb-0">
+        @if (formGroup.get('title')?.errors?.['required']) { Title is required!
+        }
+      </p>
+      }
     </p-floatLabel>
-    <p-floatLabel class="col-7">
+
+    <!-- Description -->
+    <p-floatLabel class="col-7 h-5rem">
       <textarea
         id="description"
         class="w-full h-4rem"
@@ -18,20 +28,37 @@
         pInputTextarea
       ></textarea>
       <label for="description">Description</label>
+      @if (formGroup.get('description')?.invalid &&
+      (formGroup.get('description')?.dirty ||
+      formGroup.get('description')?.touched) ) {
+      <p class="text-red-500 ml-2 mt-2 mb-0">
+        @if (formGroup.get('description')?.errors?.['required']) { Description
+        is required! }
+      </p>
+      }
     </p-floatLabel>
   </div>
   <div class="grid justify-content-between mt-4">
-    <p-floatLabel class="col-4">
+    <p-floatLabel class="col-4 h-5rem">
       <p-dropdown
         [options]="categoryOptions"
         formControlName="category"
         optionLabel="name"
         optionValue="value"
+        id="category-dropdown"
       />
       <label for="category">Category</label>
+      @if (formGroup.get('category')?.invalid &&
+      (formGroup.get('category')?.dirty || formGroup.get('category')?.touched) )
+      {
+      <p class="text-red-500 ml-2 mt-2 mb-0">
+        @if (formGroup.get('category')?.errors?.['required']) { Category is
+        required! }
+      </p>
+      }
     </p-floatLabel>
     <div class="grid col-7 m-0 justify-content-between">
-      <p-floatLabel>
+      <p-floatLabel class="h-5rem">
         <p-inputNumber
           inputId="integeronly"
           id="price"
@@ -39,8 +66,15 @@
           prefix="$"
         />
         <label for="price">Price</label>
+        @if (formGroup.get('price')?.invalid && (formGroup.get('price')?.dirty
+        || formGroup.get('price')?.touched) ) {
+        <p class="text-red-500 ml-2 mt-2 mb-0">
+          @if (formGroup.get('price')?.errors?.['required']) { Price is
+          required! }
+        </p>
+        }
       </p-floatLabel>
-      <p-floatLabel>
+      <p-floatLabel class="h-5rem">
         <p-inputNumber
           inputId="integeronly"
           id="discount"
@@ -48,8 +82,16 @@
           suffix="%"
         />
         <label for="discount">Discount</label>
+        @if (formGroup.get('discount')?.invalid &&
+        (formGroup.get('discount')?.dirty || formGroup.get('discount')?.touched)
+        ) {
+        <p class="text-red-500 ml-2 mt-2 mb-0">
+          @if (formGroup.get('discount')?.errors?.['required']) { Discount is
+          required! }
+        </p>
+        }
       </p-floatLabel>
-      <p-floatLabel>
+      <p-floatLabel class="h-5rem">
         <p-inputNumber
           inputId="integeronly"
           id="stock"
@@ -57,38 +99,63 @@
           suffix=" /100"
         />
         <label for="stock">Stock</label>
+        @if (formGroup.get('stock')?.invalid && (formGroup.get('stock')?.dirty
+        || formGroup.get('stock')?.touched) ) {
+        <p class="text-red-500 ml-2 mt-2 mb-0">
+          @if (formGroup.get('stock')?.errors?.['required']) { Stock is
+          required! }
+        </p>
+        }
       </p-floatLabel>
     </div>
   </div>
   <div class="grid justify-content-between mt-4">
-    <p-floatLabel class="col-6">
+    <p-floatLabel class="col-6 h-5rem">
       <p-autoComplete
         formControlName="tags"
         [suggestions]="filteredTags"
         (completeMethod)="searchTags($event)"
         [multiple]="true"
+        id="tag-autocomplete"
       />
       <label for="tags">Tags</label>
+      @if (formGroup.get('tags')?.invalid && (formGroup.get('tags')?.dirty ||
+      formGroup.get('tags')?.touched) ) {
+      <p class="text-red-500 ml-2 mt-2 mb-0">
+        @if (formGroup.get('tags')?.errors?.['required']) { Tags is required! }
+      </p>
+      }
     </p-floatLabel>
 
-    <p-floatLabel class="col-5">
+    <p-floatLabel class="col-5 h-5rem">
       <input pInputText id="sku" class="w-full h-4rem" formControlName="sku" />
       <label for="sku">SKU</label>
+      @if (formGroup.get('sku')?.invalid && (formGroup.get('sku')?.dirty ||
+      formGroup.get('sku')?.touched) ) {
+      <p class="text-red-500 ml-2 mt-2 mb-0">
+        @if (formGroup.get('sku')?.errors?.['required']) { SKU is required! }
+      </p>
+      }
     </p-floatLabel>
   </div>
   <footer
     class="flex justify-content-between w-full left-0 border-1 p-3 absolute bottom-0"
   >
-  @if (productId) {
+    @if (productId) {
 
-    <p-button label="Delete" severity="danger" />
-  }@else {
+    <p-button
+      label="Delete"
+      (onClick)="deleteProduct(productId)"
+      severity="danger"
+    />
+    }@else {
     <p-button label="Delete" disabled="true" severity="danger" />
 
-  }
-  
+    }
 
-    <p-button [label]="!productId? 'Create':'Update'" (click)="!productId? submitProduct(): editProduct()" />
-  
+    <p-button
+      [label]="!productId ? 'Create' : 'Update'"
+      (click)="!productId ? submitProduct() : editProduct()"
+    />
   </footer>
 </form>

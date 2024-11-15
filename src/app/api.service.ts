@@ -82,13 +82,17 @@ export class ApiService {
       }
     );
   }
-  updateProduct(product: Partial<Product>): Observable<Product> {
+  updateProduct(id: number, product: Partial<Product>): Observable<Product> {
     return this.http.put<Product>(
-      'https://dummyjson.com/products/add',
+      `https://dummyjson.com/products/${id}`,
       product,
       {
         headers: { 'Content-Type': 'application/json' },
       }
     );
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`https://dummyjson.com/products/${id}`);
   }
 }

@@ -1,6 +1,6 @@
 <header class="header-border py-3 pl-6">
   @if(router.url.includes('products/add') || productId){ @if (productId) {
-  {{ productId }}
+  <p>Product ID: {{ productId }}</p>
   }@else{
 
   <p>New Product</p>

@@ -1,6 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -9,9 +14,9 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ApiService } from '../api.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../product-interface';
-import { max } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-product',
@@ -30,25 +35,36 @@ import { max } from 'rxjs';
   templateUrl: './new-product.component.html',
   styleUrl: './new-product.component.scss',
 })
-export class NewProductComponent implements OnInit {
+export class NewProductComponent implements OnInit, OnDestroy {
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  productId: any;
   categoryOptions: { name: string; value: string }[] = [];
-
   productTags: string[] = [];
   filteredTags: string[] = [];
+  private editSubscription: Subscription | null = null;
 
   formGroup: FormGroup = new FormGroup({
-    title: new FormControl<string | null>(null),
-    description: new FormControl<string | null>(null),
-    category: new FormControl<string[] | null>(null),
-    price: new FormControl<number | null>(null),
-    discount: new FormControl<number | null>(null),
-    stock: new FormControl<number | null>(null,Validators.max(100)),
-    tags: new FormControl<string[] | null>(null),
-    sku: new FormControl<string | null>(null, Validators.pattern(/^[A-Z0-9_]+$/) ),
+    title: new FormControl<string | null>(null, Validators.required),
+    description: new FormControl<string | null>(null, Validators.required),
+    category: new FormControl<string[] | null>(null, Validators.required),
+    price: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+    discount: new FormControl<number | null>(null, Validators.required),
+    stock: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(100),
+    ]),
+    tags: new FormControl<string[] | null>(null, Validators.required),
+    sku: new FormControl<string | null>(null, [
+      Validators.required,
+      Validators.pattern(/^[A-Z0-9_]+$/),
+    ]),
   });
-  productId:string|null=null
 
   ngOnInit(): void {
     this.apiService.getCategories().subscribe((categories) => {
@@ -64,14 +80,22 @@ export class NewProductComponent implements OnInit {
       this.productTags = tags;
     });
 
-     this.productId = this.route.snapshot.paramMap.get('id');
+    this.productId = this.route.snapshot.paramMap.get('id');
 
     if (this.productId) {
-      this.apiService.getProductById(Number(this.productId)).subscribe((product) => {
-        this.populateForm(product);
-      });
+      this.apiService
+        .getProductById(Number(this.productId))
+        .subscribe((product) => {
+          this.populateForm(product);
+        });
     }
   }
+
+  ngOnDestroy(): void {
+    this.editSubscription?.unsubscribe();
+    console.log('Unsubscribed from UPDATE');
+  }
+
   populateForm(product: Product) {
     this.formGroup.patchValue({
       title: product.title,
@@ -94,17 +118,26 @@ export class NewProductComponent implements OnInit {
 
   submitProduct() {
     const productData = this.formGroup.value;
-    this.apiService.createProduct(productData).subscribe(
-      (response)=>{
-        console.log(response);
-        
-      }
-    );
-    this.formGroup.reset()
+    this.apiService.createProduct(productData).subscribe((response) => {
+      console.log(response);
+    });
+    this.router.navigate(['/products']);
   }
 
-  editProduct(){
+  editProduct() {
+    const updatedProduct: Partial<Product> = this.formGroup.value;
+    this.apiService
+      .updateProduct(this.productId, updatedProduct)
+      .subscribe((response) => {
+        console.log('Product updated:', response);
+        this.router.navigate(['/products']);
+      });
+  }
 
+  deleteProduct(id: number) {
+    this.apiService.delete(id).subscribe(() => {
+      console.log(`Product with ID ${id} deleted.`);
+      this.router.navigate(['/products']);
+    });
   }
 }
-

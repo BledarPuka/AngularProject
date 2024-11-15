@@ -41,7 +41,7 @@ interface Column {
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit {
-  private routes = inject(Router);
+  private router = inject(Router);
   protected apiService = inject(ApiService);
   hasResults: boolean = true;
 
@@ -86,10 +86,10 @@ export class ProductsComponent implements OnInit {
   }
 
   newProduct() {
-    this.routes.navigate(['products/add']);
+    this.router.navigate(['products/add']);
   }
 
-  productById(id: number) {
-    this.routes.navigate([`product/${id}`]);
+  productById(id: string) {
+    this.router.navigate([`product/${id}`]);
   }
 }
