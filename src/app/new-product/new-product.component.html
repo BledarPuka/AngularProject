@@ -116,7 +116,7 @@
         [suggestions]="filteredTags"
         (completeMethod)="searchTags($event)"
         [multiple]="true"
-        id="tag-autocomplete"
+        inputStyleClass="autocomplete"
       />
       <label for="tags">Tags</label>
       @if (formGroup.get('tags')?.invalid && (formGroup.get('tags')?.dirty ||

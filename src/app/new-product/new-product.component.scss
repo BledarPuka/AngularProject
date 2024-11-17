@@ -14,22 +14,18 @@
     height: 4rem !important;
   }
 
-  p-autocomplete.ng-invalid.ng-touched {
-    border: 1px solid red !important;
-  }
-
-  #category-dropdown.ng-invalid.ng-touched {
-    border: 1px solid red !important;
+  p-dropdown.ng-invalid.ng-touched > div {
+    border: 1px solid red;
   }
 
   input.ng-invalid.ng-touched {
     border: 1px solid red;
   }
-  .p-inputnumber-input.ng-invalid.ng-touched {
-    border: 1px solid red;
-  }
 
   .p-inputtextarea.ng-invalid.ng-touched {
+    border: 1px solid red !important;
+  }
+  p-inputnumber.ng-dirty.ng-invalid > .p-inputnumber > .p-inputtext {
     border: 1px solid red !important;
   }
 }

@@ -16,7 +16,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ApiService } from '../api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../product-interface';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-new-product',
@@ -67,27 +67,31 @@ export class NewProductComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.apiService.getCategories().subscribe((categories) => {
-      this.categoryOptions = categories.map((category) => ({
-        name: category
-          .replace(/-/, ' ')
-          .replace(/\b\w/g, (c) => c.toUpperCase()),
-        value: category,
-      }));
-    });
+    this.apiService
+      .getCategories()
+      .pipe(take(1))
+      .subscribe((categories) => {
+        this.categoryOptions = categories.map((category) => ({
+          name: category
+            .replace(/-/, ' ')
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+          value: category,
+        }));
+      });
 
-    this.apiService.getTags().subscribe((tags) => {
-      this.productTags = tags;
-    });
+    this.apiService
+      .getTags()
+      .pipe(take(1))
+      .subscribe((tags) => {
+        this.productTags = tags;
+      });
 
     this.productId = this.route.snapshot.paramMap.get('id');
 
     if (this.productId) {
-      this.apiService
-        .getProductById(Number(this.productId))
-        .subscribe((product) => {
-          this.populateForm(product);
-        });
+      this.apiService.getProductById(this.productId).subscribe((product) => {
+        this.populateForm(product);
+      });
     }
   }
 
@@ -117,6 +121,10 @@ export class NewProductComponent implements OnInit, OnDestroy {
   }
 
   submitProduct() {
+    if (this.formGroup.invalid) {
+      console.error('Form is invvalid');
+      return;
+    }
     const productData = this.formGroup.value;
     this.apiService.createProduct(productData).subscribe((response) => {
       console.log(response);
@@ -125,6 +133,10 @@ export class NewProductComponent implements OnInit, OnDestroy {
   }
 
   editProduct() {
+    if (this.formGroup.invalid) {
+      console.error('Form is invvalid');
+      return;
+    }
     const updatedProduct: Partial<Product> = this.formGroup.value;
     this.apiService
       .updateProduct(this.productId, updatedProduct)
